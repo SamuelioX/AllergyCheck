@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">AllergyCheck</string>
+    <string name="location">location_string</string>
+    <string name="condition">condition_string</string>
+    <string name="airqualcondition">AirQualCondition</string>
+    <string name="treename">treeName</string>
+    <string name="airname">AirName</string>
+    <string name="search">Search</string>
+    <!--<string name="temperature">temperature_string</string>-->
+</resources>
