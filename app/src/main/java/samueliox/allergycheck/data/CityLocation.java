@@ -6,7 +6,7 @@ import org.json.JSONObject;
  * @author samuel
  * @version 5/29/2016
  */
-public class Location implements JSONPopulator {
+public class CityLocation implements JSONPopulator {
     private String city, state, key;
 
     public String getKey() {

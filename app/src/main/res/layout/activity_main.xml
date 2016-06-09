@@ -33,7 +33,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/location"
         android:id="@+id/locationTextView"
-        android:layout_centerVertical="true"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -42,9 +42,9 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/airname"
         android:id="@+id/allergyTextView"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/treeConditionTextView"
-        android:layout_alignStart="@+id/treeConditionTextView" />
+        android:layout_marginTop="45dp"
+        android:layout_below="@+id/locationTextView"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -52,10 +52,9 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/treename"
         android:id="@+id/treeView"
+        android:layout_marginTop="42dp"
         android:layout_below="@+id/aqContidionTextView"
-        android:layout_alignRight="@+id/allergyTextView"
-        android:layout_alignEnd="@+id/allergyTextView"
-        android:layout_marginTop="90dp" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -78,10 +77,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cityLocationInput"
+        android:text="@string/city"
+        android:inputType="text"
+        android:layout_below="@+id/aqContidionTextView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="154dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/use_your_location"
+        android:id="@+id/userLocationButton"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/state"
+        android:id="@+id/stateTextView"
         android:layout_below="@+id/locationTextView"
-        android:layout_centerHorizontal="true"
-        android:text="City"
-        android:inputType="text" />
+        android:layout_centerHorizontal="true" />
 
 
     <!--<ImageView-->

@@ -3,6 +3,7 @@ package samueliox.allergycheck;
 import android.app.Dialog;
 import android.content.Context;
 //import android.location.LocationListener;
+import android.os.AsyncTask;
 import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -13,7 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import samueliox.allergycheck.data.Location;
+import java.util.ArrayList;
+
+import samueliox.allergycheck.data.CityLocation;
 
 /**
  * Fragment that holds the lists of citys from a JSON script when location key is looked up
@@ -23,40 +26,43 @@ import samueliox.allergycheck.data.Location;
 public class CitylistFragment extends DialogFragment{
     LayoutInflater inflater;
     View v;
-    LocationListener activityCommander;
-    private ListView cityListView;
+    CityLocationListener activityCommander;
 
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
         try {
-            activityCommander = (LocationListener) context;
+            activityCommander = (CityLocationListener) context;
         } catch (ClassCastException e){
             throw new ClassCastException(context.toString());
         }
     }
 
     public Dialog onCreateDialog(Bundle savedInstanceState){
-        AlertDialog.Builder ad = new AlertDialog.Builder(getActivity());
 //        ad.setIcon(R.drawable.ic_launcher);
-
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1);
-        arrayAdapter.add("Seattle");
-        arrayAdapter.add("Lake Forest Park");
-        arrayAdapter.add("South Park");
-        arrayAdapter.add("Chicago");
-        arrayAdapter.add("Gatti");
+//        activityCommander.refreshCityList();
+        ArrayList<String> cityList = activityCommander.getCityList();
+        for(int i = 0; i < cityList.size(); i++){
+            arrayAdapter.add(cityList.get(i));
+        }
+        AlertDialog.Builder ad = new AlertDialog.Builder(getActivity());
+//            }
+
+        //add items from the array list
+//        arrayAdapter.add("Seattle");
+//        arrayAdapter.add("Lake Forest Park");
+//        arrayAdapter.add("South Park");
+//        arrayAdapter.add("Chicago");
+//        arrayAdapter.add("Gatti");
 
         ad.setNegativeButton(
                 "cancel",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //refresh the weather with whatever is clicked
-//
-////                refreshWeather();
                         dialog.dismiss();
                     }
                 });
@@ -65,12 +71,13 @@ public class CitylistFragment extends DialogFragment{
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String city = arrayAdapter.getItem(which);
+                        String city = activityCommander.getCityLocation();
+                        //needs to get the city from the earlier search
+                        activityCommander.updateCityLocation(city);
+                        activityCommander.refresh(city, which);
                         AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
-                        activityCommander.updateLocation(city);
-                        builderInner.setMessage(city);
+                        builderInner.setMessage(arrayAdapter.getItem(which));
                         builderInner.setTitle("Your Selected Item is");
-                        activityCommander.refresh(city);
                         builderInner.setPositiveButton(
                                 "Ok",
                                 new DialogInterface.OnClickListener() {
@@ -85,6 +92,7 @@ public class CitylistFragment extends DialogFragment{
                     }
                 });
         ad.setTitle("Did you mean...");
+//        activityCommander.hideLoadingDialog();
         return ad.create();
     }
 }

@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">AllergyCheck</string>
-    <string name="location">location_string</string>
-    <string name="condition">condition_string</string>
-    <string name="airqualcondition">AirQualCondition</string>
-    <string name="treename">treeName</string>
-    <string name="airname">AirName</string>
+    <string name="location">City</string>
+    <string name="condition">n/a</string>
+    <string name="airqualcondition">n/a</string>
+    <string name="treename">Tree Quality</string>
+    <string name="airname">Air Quality</string>
     <string name="search">Search</string>
-    <!--<string name="temperature">temperature_string</string>-->
+    <string name="google_app_id">enduring-aria-132323</string>
+    <string name="use_your_location">Use Your Location</string>
+    <string name="city">Enter Any City!</string>
+    <string name="state">state</string>
 </resources>

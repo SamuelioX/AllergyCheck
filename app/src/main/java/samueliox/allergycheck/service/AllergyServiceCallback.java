@@ -1,7 +1,9 @@
 package samueliox.allergycheck.service;
 
+import java.util.ArrayList;
+
 import samueliox.allergycheck.data.AirQuality;
-import samueliox.allergycheck.data.Location;
+import samueliox.allergycheck.data.CityLocation;
 import samueliox.allergycheck.data.Tree;
 
 /**
@@ -11,6 +13,9 @@ import samueliox.allergycheck.data.Tree;
     public interface AllergyServiceCallback {
     void serviceSuccess(Tree tree);
     void serviceSuccess(AirQuality airQuality);
-    void serviceSuccess(Location location);
+    void serviceSuccess(CityLocation location);
+    void setCityList(ArrayList<String> a);
     void serviceFailure(Exception e);
+    void showLoadingDialog();
+    void hideLoadingDialog();
 }
