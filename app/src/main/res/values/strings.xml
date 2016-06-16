@@ -10,4 +10,9 @@
     <string name="use_your_location">Use Your Location</string>
     <string name="city">Enter Any City!</string>
     <string name="state">state</string>
+    <string name="country">Country</string>
+    <string name="n_a">n/a</string>
+    <string name="ragweedCondition">n/a</string>
+    <string name="ragweed">Ragweed</string>
+    <string name="grass">Grass</string>
 </resources>

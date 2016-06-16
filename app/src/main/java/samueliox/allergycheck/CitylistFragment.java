@@ -24,8 +24,6 @@ import samueliox.allergycheck.data.CityLocation;
  * @version 5/29/2016
  */
 public class CitylistFragment extends DialogFragment{
-    LayoutInflater inflater;
-    View v;
     CityLocationListener activityCommander;
 
     @Override
@@ -43,13 +41,11 @@ public class CitylistFragment extends DialogFragment{
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1);
-//        activityCommander.refreshCityList();
         ArrayList<String> cityList = activityCommander.getCityList();
         for(int i = 0; i < cityList.size(); i++){
             arrayAdapter.add(cityList.get(i));
         }
         AlertDialog.Builder ad = new AlertDialog.Builder(getActivity());
-//            }
 
         //add items from the array list
 //        arrayAdapter.add("Seattle");
@@ -92,7 +88,6 @@ public class CitylistFragment extends DialogFragment{
                     }
                 });
         ad.setTitle("Did you mean...");
-//        activityCommander.hideLoadingDialog();
         return ad.create();
     }
 }

@@ -23,6 +23,8 @@ import java.util.ArrayList;
 
 import samueliox.allergycheck.data.AirQuality;
 import samueliox.allergycheck.data.CityLocation;
+import samueliox.allergycheck.data.Grass;
+import samueliox.allergycheck.data.Ragweed;
 import samueliox.allergycheck.data.Tree;
 import samueliox.allergycheck.service.AccuWeatherService;
 import samueliox.allergycheck.service.AllergyServiceCallback;
@@ -40,7 +42,8 @@ public class MainActivity extends FragmentActivity implements AllergyServiceCall
 
 //    private ImageView weatherIconImageView;
     private TextView treeTextView, aqConditionTextView, treeConditionTextView, allergyTextView,
-        locationTextView, stateTextView;
+        locationTextView, stateTextView, countryTextView, grassTextView, grassConditionTextView,
+        ragweedTextView, ragweedConditionTextView;
     private AccuWeatherService service;
     private EditText cityEditTextView;
     private String cityLocation;
@@ -56,12 +59,20 @@ public class MainActivity extends FragmentActivity implements AllergyServiceCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //set loading dialog
         dialog = new ProgressDialog(this);
         showLoadingDialog();
+        //sets all the assets
         allergyTextView = (TextView)findViewById(R.id.allergyTextView);
         treeTextView = (TextView)findViewById(R.id.treeView);
+        countryTextView = (TextView)findViewById(R.id.countryTextView);
         aqConditionTextView = (TextView)findViewById(R.id.aqContidionTextView);
         treeConditionTextView = (TextView)findViewById(R.id.treeConditionTextView);
+        grassTextView = (TextView)findViewById(R.id.grassTextView);
+        grassConditionTextView = (TextView)findViewById(R.id.grassConditionTextView);
+        ragweedTextView = (TextView)findViewById(R.id.ragweedTextView);
+        ragweedConditionTextView = (TextView)findViewById(R.id.ragweedConditionTextView);
+
         locationTextView = (TextView)findViewById(R.id.locationTextView);
         stateTextView = (TextView)findViewById(R.id.stateTextView);
         cityEditTextView = (EditText)findViewById(R.id.cityLocationInput);
@@ -87,9 +98,7 @@ public class MainActivity extends FragmentActivity implements AllergyServiceCall
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCityLocation();
                 refreshCityList();
-                searchCity(v);
             }
         });
 
@@ -99,26 +108,14 @@ public class MainActivity extends FragmentActivity implements AllergyServiceCall
                 service.refreshInitialCityByValues(userLocation.getLongitude(), userLocation.getLatitude());
             }
         });
-
         hideLoadingDialog();
-
-//        location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-//        add current location functionality
-        //sends default start
-
-
-        //search for key with lat long
-//        service.refreshInitialCityByValues(location.getLongitude(), location.getLatitude());
-//        refresh(cityLocation, 0);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
-        System.out.println("connected");
-        userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+//        userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
     @Override
@@ -154,7 +151,9 @@ public class MainActivity extends FragmentActivity implements AllergyServiceCall
     public void setCityList(ArrayList<String> a){
         this.cityList = a;
     }
+
     public void refreshCityList(){
+        setCityLocation();
         service.refreshCityList(getCityLocation());
     }
 
@@ -162,55 +161,40 @@ public class MainActivity extends FragmentActivity implements AllergyServiceCall
         return cityList;
     }
 
-    public void searchCity(View v){
+    public void searchCity(){
         CitylistFragment cityList = new CitylistFragment();
         cityList.show(getSupportFragmentManager(), "my_dialog");
-//        dialog.hide();
     }
 
     public void refresh(String location, int cityIndex){
-//        dialog.setMessage("Loading...");
-//        dialog.show();
         service.refreshCityLocation(location, cityIndex);
     }
 
     public void serviceSuccess(Tree tree) {
-//        dialog.hide();
-//        Item item = channel.getItem();
-//        int resourceId = getResources().getIdentifier("drawable/icon_" +][\'
-//        ''
-//        @SuppressWarnings("deprecation")
-//        Drawable weatherIconDrawable = getResources().getDrawable(resourceId);
-//        weatherIconImageView.setImageDrawable(weatherIconDrawable);
-//        temperatureTextView.setText(item.getCondition().getTemperature() + "\u00B0" + channel.getUnits().getTemperature());
-//        treeTextView.setText(tree.getName());
         treeConditionTextView.setText(tree.getCategory());
-//        locationTextView.setText(service.getCityLocation());
     }
+
+    public void serviceSuccess(Grass g) {
+        grassConditionTextView.setText(g.getCategory());
+    }
+
+    public void serviceSuccess(Ragweed r) {
+        ragweedConditionTextView.setText(r.getCategory());
+    }
+
     public void serviceSuccess(CityLocation location) {
-//        dialog.hide();
-//        Item item = channel.getItem();
-//        int resourceId = getResources().getIdentifier("drawable/icon_" +][\'
-//        ''
-//        @SuppressWarnings("deprecation")
-//        Drawable weatherIconDrawable = getResources().getDrawable(resourceId);
-//        weatherIconImageView.setImageDrawable(weatherIconDrawable);
-//        temperatureTextView.setText(item.getCondition().getTemperature() + "\u00B0" + channel.getUnits().getTemperature());
         locationTextView.setText(location.getCity());
         stateTextView.setText(location.getState());
-//        treeConditionTextView.setText(tree.getCategory());
-//        locationTextView.setText(service.getCityLocation());
+        countryTextView.setText(location.getCountry());
+
     }
     @Override
     public void serviceSuccess(AirQuality airQuality) {
-//        allergyTextView.setText(airQuality.getName());
         aqConditionTextView.setText(airQuality.getCategory());
-//        dialog.hide();
     }
 
     @Override
     public void serviceFailure(Exception e) {
-//        dialog.hide();
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
     }
 

@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 import samueliox.allergycheck.data.AirQuality;
 import samueliox.allergycheck.data.CityLocation;
+import samueliox.allergycheck.data.Grass;
+import samueliox.allergycheck.data.Ragweed;
 import samueliox.allergycheck.data.Tree;
 
 /**
@@ -41,8 +43,12 @@ public class AccuWeatherService {
     }
 
     public void refreshCityList(String l){
-//        new RefreshCityList().execute(l);
         new AsyncTask<String, Void, Void>(){
+            @Override
+            protected void onPreExecute() {
+                callback.showLoadingDialog();
+            }
+
             @Override
             protected Void doInBackground(String... strings){
                 String location = strings[0];
@@ -51,13 +57,15 @@ public class AccuWeatherService {
                 String cityEndpoint = "http://dataservice.accuweather.com/locations/v1/" +
                         "cities/autocomplete?apikey=Olfi1F5YOGygHV3B3lReTkCgGN1UBuHl&q=" + city;
                 String JSONQuery = getJSONQuery(cityEndpoint);
+
                 //search for key location
                 try{
                     //this query defaults at the top of the array, needs to let user select the correct city
                     JSONArray data = new JSONArray(JSONQuery);
                     for(int i = 0; i < data.length(); i++){
                         cityList.add(data.optJSONObject(i).optString("LocalizedName") + ", " +
-                                data.optJSONObject(i).optJSONObject("AdministrativeArea").optString("LocalizedName"));
+                                data.optJSONObject(i).optJSONObject("AdministrativeArea").optString("LocalizedName") + " "
+                                + data.optJSONObject(i).optJSONObject("Country").optString("LocalizedName"));
                     }
                 } catch (JSONException e){
                     error = e;
@@ -66,8 +74,6 @@ public class AccuWeatherService {
                 return null;
             }
 
-
-
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
@@ -75,16 +81,9 @@ public class AccuWeatherService {
                     callback.serviceFailure(error);
                     return;
                 }
-//                callback.hideLoadingDialog();
+                callback.searchCity();
+                callback.hideLoadingDialog();
             }
-
-//            @Override
-//            protected void onPostExecute(String a){
-//                if(a != null || error != null){
-//                    callback.serviceFailure(error);
-//                    return;
-//                }
-//            }
         }.execute(l);
     }
 
@@ -130,10 +129,6 @@ public class AccuWeatherService {
                     JSONObject data = new JSONObject(s);
                     //searches the json object daily forecast array
                     JSONArray queryResults = data.optJSONArray("DailyForecasts");
-//                    int count = queryResults.optInt("count");
-//                    if(count == 0){
-//                      //  callback.serviceFailure(new CityLocationWeatherException("No weather information found for " + location));
-//                    }
 
                     //searches the json object airandpollen array
                     JSONObject object = queryResults.optJSONObject(0);
@@ -186,9 +181,9 @@ public class AccuWeatherService {
             protected String doInBackground(String... strings){
                 String city = replaceSpaces(strings[0]);
                 //checks if the string is empty, defaults to Seattle
-                if(strings[0] == "" || strings[0] == null){
-                    city = "Honolulu";
-                }
+//                if(strings[0] == "" || strings[0] == null){
+//                    city = "Honolulu";
+//                }
                 String cityEndpoint = "http://dataservice.accuweather.com/locations/v1/" +
                         "cities/autocomplete?apikey=Olfi1F5YOGygHV3B3lReTkCgGN1UBuHl&q=" + city;
 //                saves the query
@@ -200,7 +195,6 @@ public class AccuWeatherService {
                     //this query defaults at the top of the array, needs to let user select the correct city
                     JSONArray data = new JSONArray(keyCityLocationQuery);
                     //get the correct city array int
-//                    int cityIndex = 0;
                     JSONObject key = data.optJSONObject(ctyIdx);
                     locationJSON.populate(key);
                     locationKey = locationJSON.getKey();
@@ -226,10 +220,6 @@ public class AccuWeatherService {
                     JSONObject data = new JSONObject(s);
                     //searches the json object daily forecast array
                     JSONArray queryResults = data.optJSONArray("DailyForecasts");
-//                    int count = queryResults.optInt("count");
-//                    if(count == 0){
-//                      //  callback.serviceFailure(new CityLocationWeatherException("No weather information found for " + location));
-//                    }
 
                     //searches the json object airandpollen array
                     JSONObject object = queryResults.optJSONObject(0);
@@ -252,10 +242,21 @@ public class AccuWeatherService {
 
                     Tree tree = new Tree();
                     tree.populate(airAndPollen.optJSONObject(treeIndex));
+
+                    Ragweed weed = new Ragweed();
+                    weed.populate(airAndPollen.optJSONObject(treeIndex));
+
+                    Grass grass = new Grass();
+                    grass.populate(airAndPollen.optJSONObject(treeIndex));
+
+
                     callback.serviceSuccess(tree);
                     callback.serviceSuccess(airQuality);
+                    callback.serviceSuccess(grass);
+                    callback.serviceSuccess(weed);
                     callback.serviceSuccess(locationJSON);
                     callback.hideLoadingDialog();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -286,7 +287,8 @@ public class AccuWeatherService {
         if(s == null){
             return "";
         }
-        for(int i = 0; i < s.length(); i++){
+        //checking for spaces except for the last character
+        for(int i = 0; i < s.length()-1; i++){
             char c = (s.charAt(i));
             if(c != ' ') {
                 sb.append(c);
@@ -296,39 +298,5 @@ public class AccuWeatherService {
         }
         return sb.toString();
     }
-//    class RefreshCityList extends AsyncTask<String, Void, Void> {
-//        @Override
-//        protected Void doInBackground(String... strings) {
-//            String location = strings[0];
-//            ArrayList<String> cityList = new ArrayList<>();
-//            String city = replaceSpaces(location);
-//            String cityEndpoint = "http://dataservice.accuweather.com/locations/v1/" +
-//                    "cities/autocomplete?apikey=Olfi1F5YOGygHV3B3lReTkCgGN1UBuHl&q=" + city;
-//            String JSONQuery = getJSONQuery(cityEndpoint);
-//            //search for key location
-//            try{
-//                //this query defaults at the top of the array, needs to let user select the correct city
-//                JSONArray data = new JSONArray(JSONQuery);
-//                for(int i = 0; i < data.length(); i++){
-//                    cityList.add(data.optJSONObject(i).optString("LocalizedName") + ", " +
-//                            data.optJSONObject(i).optJSONObject("AdministrativeArea").optString("LocalizedName"));
-//                }
-//            } catch (JSONException e){
-//                error = e;
-//            }
-//            callback.setCityList(cityList);
-//            return null;
-//        }
-
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//        }
-//    }
 }
 
